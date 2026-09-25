@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    image: vishalsezhiyan/dev:latest
+    container_name: my-app-projectone
+    ports:
+      - "80:81"
+    restart: unless-stopped
