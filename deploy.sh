@@ -23,26 +23,26 @@ echo "==================================="
 
 # ==== Push to Docker Hub ====
 echo "Pushing image to Docker Hub..."
-sudo docker push "${IMAGE_TAG}"
-sudo docker push "${REPO_NAME}:latest"
+docker push "${IMAGE_TAG}"
+docker push "${REPO_NAME}:latest"
 
 # ==== Stop and remove old container ====
 if sudo docker ps -a --format '{{.Names}}' | grep -Eq "^${CONTAINER_NAME}\$"; then
     echo "Stopping existing container: ${CONTAINER_NAME}"
-    sudo docker stop "${CONTAINER_NAME}" || true
-    sudo docker rm "${CONTAINER_NAME}" || true
+     docker stop "${CONTAINER_NAME}" || true
+     docker rm "${CONTAINER_NAME}" || true
 fi
 
 # ==== Run new container ====
 echo "Starting new container: ${CONTAINER_NAME}"
-sudo docker run -d \
+ docker run -d \
     --name "${CONTAINER_NAME}" \
     -p "${HOST_PORT}:${CONTAINER_PORT}" \
     --restart unless-stopped \
     "${IMAGE_TAG}"
 
 sleep 2
-sudo docker ps --filter "name=${CONTAINER_NAME}"
+ docker ps --filter "name=${CONTAINER_NAME}"
 
 if curl -sf -o /dev/null "http://localhost:${HOST_PORT}"; then
     echo "Deployment successful: ${IMAGE_TAG} live on port ${HOST_PORT}"
