@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+
 # ==== Config ====
 DOCKERHUB_USER="vishalsezhiyan"   # <-- change this
 BRANCH="${1:-dev}"
@@ -27,7 +28,7 @@ docker push "${IMAGE_TAG}"
 docker push "${REPO_NAME}:latest"
 
 # ==== Stop and remove old container ====
-if sudo docker ps -a --format '{{.Names}}' | grep -Eq "^${CONTAINER_NAME}\$"; then
+if docker ps -a --format '{{.Names}}' | grep -Eq "^${CONTAINER_NAME}\$"; then
     echo "Stopping existing container: ${CONTAINER_NAME}"
      docker stop "${CONTAINER_NAME}" || true
      docker rm "${CONTAINER_NAME}" || true
@@ -48,5 +49,5 @@ if curl -sf -o /dev/null "http://localhost:${HOST_PORT}"; then
     echo "Deployment successful: ${IMAGE_TAG} live on port ${HOST_PORT}"
 else
     echo "WARNING: App not responding. Check logs:"
-    echo "  sudo docker logs ${CONTAINER_NAME}"
+    echo " docker logs ${CONTAINER_NAME}"
 fi
