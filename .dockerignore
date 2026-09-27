@@ -1,0 +1,7 @@
+Dockerfile
+docker-compose.yml
+build.sh
+deploy.sh
+Jenkinsfile
+README.md
+.git

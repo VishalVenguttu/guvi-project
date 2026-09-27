@@ -22,9 +22,9 @@ echo " Branch      : ${BRANCH}"
 echo " Building    : ${IMAGE_TAG}"
 echo "==================================="
 
-sudo docker build -t "${IMAGE_TAG}" -t "${IMAGE_LATEST}" .
+docker build -t "${IMAGE_TAG}" -t "${IMAGE_LATEST}" .
 
 echo "-----------------------------------"
 echo " Build complete: ${IMAGE_TAG}"
-sudo docker images "${REPO_NAME}"
+docker images "${REPO_NAME}"
 echo "-----------------------------------"

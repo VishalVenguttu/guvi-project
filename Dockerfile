@@ -4,7 +4,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy your prebuilt app into nginx's serving directory
-COPY build/ /usr/share/nginx/html/
+COPY . /usr/share/nginx/html/
 
 EXPOSE 80
 
