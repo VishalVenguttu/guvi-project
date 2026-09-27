@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDS = credentials('dockerhub-creds')
         BUILD_TAG_NUM   = "${BUILD_NUMBER}"
-    }
+    }   
 
     stages {
 
