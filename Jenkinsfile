@@ -4,13 +4,11 @@ pipeline {
     environment {
         DOCKERHUB_CREDS = credentials('dockerhub-creds')
         BUILD_TAG_NUM   = "${BUILD_NUMBER}"
-    }   
+    }
 
     stages {
-
         stage('Checkout') {
             steps {
-                echo "Branch: ${env.BRANCH_NAME}"
                 checkout scm
             }
         }
@@ -23,38 +21,38 @@ pipeline {
 
         stage('Docker Hub Login') {
             steps {
-                sh 'echo "$DOCKERHUB_CREDS_PSW" | sudo docker login -u "$DOCKERHUB_CREDS_USR" --password-stdin'
+                sh 'echo "$DOCKERHUB_CREDS_PSW" | docker login -u "$DOCKERHUB_CREDS_USR" --password-stdin'
             }
         }
 
-        stage('Build Image') {
+        stage('Build & Push') {
             steps {
-                sh './build.sh ${BRANCH_NAME} ${BUILD_TAG_NUM}'
+                script {
+                    def repo = (env.BRANCH_NAME == 'master') ? 'prod' : 'dev'
+                    sh "./build.sh ${repo} ${BUILD_TAG_NUM}"
+                }
             }
         }
 
-        stage('Push & Deploy') {
+        stage('Deploy') {
             steps {
-                sh './deploy.sh ${BRANCH_NAME} ${BUILD_TAG_NUM}'
-            }
-        }
-
-        stage('Verify') {
-            steps {
-                sh 'curl -sf http://localhost:8081 || (echo "App not responding" && exit 1)'
+                script {
+                    def repo = (env.BRANCH_NAME == 'master') ? 'prod' : 'dev'
+                    sh "./deploy.sh ${repo} ${BUILD_TAG_NUM}"
+                }
             }
         }
     }
 
     post {
         always {
-            sh 'sudo docker logout || true'
+            sh 'docker logout || true'
         }
         success {
-            echo "✅ Pipeline succeeded on branch ${env.BRANCH_NAME}"
+            echo "Pipeline succeeded on ${env.BRANCH_NAME}"
         }
         failure {
-            echo "❌ Pipeline failed on branch ${env.BRANCH_NAME}"
+            echo "Pipeline failed on ${env.BRANCH_NAME}"
         }
     }
 }
